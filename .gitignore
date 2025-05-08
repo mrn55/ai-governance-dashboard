@@ -4,3 +4,4 @@ document_store.json
 faiss.index
 __pycache__/
 *.py[cod]
+*.zip

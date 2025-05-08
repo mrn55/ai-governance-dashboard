@@ -71,6 +71,12 @@ curl -X POST http://localhost:8000/ask \
 
 ---
 
+## Infrastructure
+
+Infrastructure can be deployed via Bicep using `infra/main.bicep` (optional if using GitHub Deployment Center)
+
+---
+
 ## 📅 Roadmap
 
 ### Week 1 (✅ You Are Here)
