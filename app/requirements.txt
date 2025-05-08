@@ -4,3 +4,4 @@ pdfminer.six
 sentence-transformers
 faiss-cpu
 python-multipart
+gunicorn
