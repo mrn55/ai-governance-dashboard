@@ -3,3 +3,4 @@ uvicorn
 pdfminer.six
 sentence-transformers
 faiss-cpu
+python-multipart
