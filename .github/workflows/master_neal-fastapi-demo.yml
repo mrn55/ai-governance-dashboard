@@ -42,3 +42,4 @@ jobs:
           app-name: "neal-fastapi-demo"
           slot-name: "Production"
           package: release.zip
+          type: zip
