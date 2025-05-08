@@ -4,6 +4,10 @@ from app.rag.ingestion import process_pdf_upload
 
 app = FastAPI()
 
+@app.get("/")
+def read_root():
+    return {"status":"ok"}
+
 @app.post("/ask")
 async def ask_question(request: Request):
     data = await request.json()

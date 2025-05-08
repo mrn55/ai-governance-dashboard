@@ -28,6 +28,14 @@ jobs:
         run: |
           zip -r release.zip ./app
 
+      - name: Upload artifact for deployment jobs
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-app
+          path: |
+            release.zip
+            !venv/
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
