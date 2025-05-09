@@ -18,10 +18,8 @@ $spJson = az ad sp create-for-rbac `
   --role contributor `
   --scopes "/subscriptions/$subscriptionId/resourceGroups/$resourceGroup" `
   --sdk-auth
+$spJsonSingleLine = ($spJson | ConvertFrom-Json | ConvertTo-Json -Compress)
 
-$sp = $spJson | ConvertFrom-Json 
 $repo = "mrn55/ai-governance-dashboard"
-gh secret set AZURE_CLIENT_ID -b $sp.clientId --repo $repo
-gh secret set AZURE_CLIENT_SECRET -b $sp.clientSecret --repo $repo
-gh secret set AZURE_TENANT_ID -b $sp.tenantId --repo $repo
-gh secret set AZURE_SUBSCRIPTION_ID -b $sp.subscriptionId --repo $repo
+
+gh secret set AZURE_CREDENTIALS -b $spJsonSingleLine --repo $repo
