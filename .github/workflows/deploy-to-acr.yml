@@ -2,7 +2,7 @@ name: Build and push to ACR
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   workflow_dispatch:
 
 jobs:
@@ -13,16 +13,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Azure CLI login and ACR login
-        uses: azure/cli@v1
+      - name: Log in to Azure
+        uses: azure/login@v2
         with:
-          inlineScript: |
-            az login --service-principal \
-              --username ${{ secrets.AZURE_CLIENT_ID }} \
-              --password ${{ secrets.AZURE_CLIENT_SECRET }} \
-              --tenant ${{ secrets.AZURE_TENANT_ID }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-            az acr login --name nealregistry
+      - name: Log in to ACR
+        run: az acr login --name nealregistry
 
       - name: Build and push Docker image
         run: |
@@ -30,16 +29,9 @@ jobs:
           docker push nealregistry.azurecr.io/sample/fastapi-azure:latest
 
       - name: Deploy latest image to Azure Container App
-        uses: azure/cli@v1
-        with:
-          inlineScript: |
-            az login --service-principal \
-              --username ${{ secrets.AZURE_CLIENT_ID }} \
-              --password ${{ secrets.AZURE_CLIENT_SECRET }} \
-              --tenant ${{ secrets.AZURE_TENANT_ID }}
-
-            az containerapp update \
-              --name neal-api \
-              --resource-group ai-governance-demo \
-              --image nealregistry.azurecr.io/sample/fastapi-azure:latest \
-              --no-wait
+        run: |
+          az containerapp update \
+            --name neal-api \
+            --resource-group ai-governance-demo \
+            --image nealregistry.azurecr.io/sample/fastapi-azure:latest \
+            --no-wait
