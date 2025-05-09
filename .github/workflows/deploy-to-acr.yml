@@ -13,12 +13,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Log in to ACR
-        uses: azure/docker-login@v1
+      - name: Azure CLI login and ACR login
+        uses: azure/cli@v1
         with:
-          login-server: nealregistry.azurecr.io
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
+          inlineScript: |
+            az login --service-principal \
+              --username ${{ secrets.AZURE_CLIENT_ID }} \
+              --password ${{ secrets.AZURE_CLIENT_SECRET }} \
+              --tenant ${{ secrets.AZURE_TENANT_ID }}
+
+            az acr login --name nealregistry
 
       - name: Build and push Docker image
         run: |
