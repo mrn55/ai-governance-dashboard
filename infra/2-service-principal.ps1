@@ -19,7 +19,7 @@ $spJson = az ad sp create-for-rbac `
   --scopes "/subscriptions/$subscriptionId/resourceGroups/$resourceGroup" `
   --sdk-auth
 $spJsonSingleLine = ($spJson | ConvertFrom-Json | ConvertTo-Json -Compress)
-
+Echo $spJsonSingleLine
 $repo = "mrn55/ai-governance-dashboard"
 
 gh secret set AZURE_CREDENTIALS -b $spJsonSingleLine --repo $repo

@@ -16,6 +16,15 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Set Container App Registry Credentials
+        run: |
+          az containerapp registry set \
+            --name neal-api \
+            --resource-group ai-governance-demo \
+            --server nealregistry.azurecr.io \
+            --username $(az acr credential show --name nealregistry --query "username" -o tsv) \
+            --password $(az acr credential show --name nealregistry --query "passwords[0].value" -o tsv)
+
       - name: Log in to ACR
         run: az acr login --name nealregistry
 
