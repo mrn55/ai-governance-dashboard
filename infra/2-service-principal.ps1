@@ -1,0 +1,27 @@
+# Check GitHub CLI auth
+try {
+    gh auth status --hostname github.com > $null 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "GitHub CLI is not authenticated. Run 'gh auth login' and try again." -ForegroundColor Red
+        exit 1
+    }
+} catch {
+    Write-Host "GitHub CLI not installed or failed to run." -ForegroundColor Red
+    exit 1
+}
+
+$resourceGroup = "ai-governance-demo"
+$subscriptionId = (az account show --query id -o tsv)
+
+$spJson = az ad sp create-for-rbac `
+  --name "github-deployer" `
+  --role contributor `
+  --scopes "/subscriptions/$subscriptionId/resourceGroups/$resourceGroup" `
+  --sdk-auth
+
+$sp = $spJson | ConvertFrom-Json 
+$repo = "mrn55/ai-governance-dashboard"
+gh secret set AZURE_CLIENT_ID -b $sp.clientId --repo $repo
+gh secret set AZURE_CLIENT_SECRET -b $sp.clientSecret --repo $repo
+gh secret set AZURE_TENANT_ID -b $sp.tenantId --repo $repo
+gh secret set AZURE_SUBSCRIPTION_ID -b $sp.subscriptionId --repo $repo

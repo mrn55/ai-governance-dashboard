@@ -1,4 +1,4 @@
-from app.rag.embedding_loader import query_faiss
+from rag.embedding_loader import query_faiss
 
 def get_answer(query: str):
     results = query_faiss(query, k=3)

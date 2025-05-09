@@ -73,6 +73,22 @@ curl -X POST http://localhost:8000/ask \
 
 ## Infrastructure
 
+### Azure Service Principal for RBAC
+
+You'll need your subscription id, can be found in portal or using cli as in below:
+
+```
+az account subscription list
+
+az ad sp create-for-rbac --name "neal-api" --role contributor --scopes /subscriptions/{subid}/resourceGroups/ai-governance-demo --sdk-auth
+```
+
+A service principal for github:
+
+```
+az ad sp create-for-rbac
+```
+
 Infrastructure can be deployed via Bicep using `infra/main.bicep` (optional if using GitHub Deployment Center)
 
 ---
@@ -87,6 +103,7 @@ Infrastructure can be deployed via Bicep using `infra/main.bicep` (optional if u
 
 ### Week 2 (Coming Next)
 
-- [ ] Ingest and chunk PDF documents
-- [ ] Expand index dynamically
-- [ ] Return top 3 matches + source metadata
+- [x] Ingest and chunk PDF documents
+- [x] Expand index dynamically
+- [x] Return top 3 matches + source metadata
+- [ ] CI/CD pipeline setup

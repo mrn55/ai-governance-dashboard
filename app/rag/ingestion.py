@@ -2,9 +2,12 @@ import tempfile
 import faiss
 import json
 import numpy as np
-from app.utils.pdf_loader import extract_text_from_pdf
-from app.utils.text_splitter import split_text
-from app.rag.embedding_loader import model, index, document_store, INDEX_PATH, DOC_STORE_PATH
+from utils.pdf_loader import extract_text_from_pdf
+from utils.text_splitter import split_text
+from utils.index_utils import INDEX_PATH, DOC_STORE_PATH, load_model
+from rag.embedding_loader import index, document_store
+
+model = load_model()
 
 def process_pdf_upload(filename: str, pdf_bytes: bytes):
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
