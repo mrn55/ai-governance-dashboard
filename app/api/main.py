@@ -16,7 +16,7 @@ def ensure_index_loaded():
 
 @app.get("/")
 def read_root():
-    return {"status":"ok"}
+    return {"status":"up"}
 
 @app.post("/ask")
 async def ask_question(request: Request):
