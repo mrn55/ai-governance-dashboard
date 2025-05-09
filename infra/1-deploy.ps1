@@ -28,5 +28,5 @@ az containerapp create `
   --target-port 8000 `
   --ingress external `
   --cpu 1.0 `
-  --memory 2.0Gi
+  --memory 2.0Gi `
   --min-replicas 1
