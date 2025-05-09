@@ -29,3 +29,4 @@ az containerapp create `
   --ingress external `
   --cpu 1.0 `
   --memory 2.0Gi
+  --min-replicas 1

@@ -1,32 +1,31 @@
 # 🧠 AI Governance Dashboard (RAG + Ethics Tracker)
 
-This project is a demonstration of a Retrieval-Augmented Generation (RAG) system designed to showcase core AI/ML skills aligned with ORNL's mission and tech stack.
+This project is a demonstration of a Retrieval-Augmented Generation (RAG) system designed to showcase core AI/ML skills aligned with **ORNL’s mission** and Microsoft Azure’s ecosystem.
 
 It includes:
 
-- ⚙️ FAISS vector search for semantic document retrieval
-- 🤖 SentenceTransformers for LLM-friendly embeddings
-- 🚀 FastAPI backend with `/ask` endpoint
-- 🔐 Designed for future expansion with PDF ingestion, Power Apps frontend, and ethical usage logging
+- ⚙️ **FAISS** vector search for semantic retrieval
+- 🤖 **SentenceTransformers** for embedding generation
+- 🚀 **FastAPI** backend with `/ask`, `/upload`, and `/health` endpoints
+- 📄 **PDF ingestion pipeline** with metadata tracking
+- 🔐 Designed for future expansion: Power Apps frontend + ethics auditing
 
 ---
 
 ## 📐 Architecture
 
 ```
-
 User Query
-↓
+   ↓
 FastAPI Endpoint (/ask)
-↓
-Embed with SentenceTransformer
-↓
-Search FAISS Vector Index
-↓
-Retrieve Top Matching Chunk(s)
-↓
-Return Response + Metadata
-
+   ↓
+SentenceTransformer Embedding
+   ↓
+FAISS Vector Similarity Search
+   ↓
+Top K Chunk(s) with Metadata
+   ↓
+JSON Response
 ```
 
 ---
@@ -36,20 +35,16 @@ Return Response + Metadata
 ### ▶️ Run Locally
 
 ```bash
-# Optional but recommended (I'm using PS)
+# Optional but recommended
 python -m venv venv
+.\venv\Scripts\activate  # On Windows
 
-# Activate the venv
-.\venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
 
-# Start API
 uvicorn app.api.main:app --reload
 ```
 
-### 🧠 Example Query
+### 💬 Query Example
 
 ```bash
 curl -X POST http://localhost:8000/ask \
@@ -63,47 +58,49 @@ curl -X POST http://localhost:8000/ask \
 {
   "answer": "CI/CD pipelines help automate software deployment in production environments.",
   "metadata": {
-    "source": "demo-corpus",
-    "similarity_score": 0.12
+    "matches": [
+      {
+        "text": "...",
+        "source": "demo.txt",
+        "chunk": 2,
+        "similarity_score": 0.12
+      }
+    ]
   }
 }
 ```
 
 ---
 
-## Infrastructure
+## ☁️ Infrastructure
 
-### Azure Service Principal for RBAC
-
-You'll need your subscription id, can be found in portal or using cli as in below:
-
-```
-az account subscription list
-
-az ad sp create-for-rbac --name "neal-api" --role contributor --scopes /subscriptions/{subid}/resourceGroups/ai-governance-demo --sdk-auth
-```
-
-A service principal for github:
-
-```
-az ad sp create-for-rbac
-```
-
-Infrastructure can be deployed via Bicep using `infra/main.bicep` (optional if using GitHub Deployment Center)
+📘 For setup instructions, see [Infrastructure Guide](./infra/infrastructure_guide.md)
 
 ---
 
 ## 📅 Roadmap
 
-### Week 1 (✅ You Are Here)
+### ✅ Milestone 1: RAG Core + Local API
 
-- [x] Build FastAPI RAG backend with test corpus
-- [x] Set up FAISS vector search
-- [x] Test query endpoint
+- [x] FastAPI scaffold with `/ask` and test corpus
+- [x] FAISS index from sentence embeddings
+- [x] Return top K matches via semantic search
 
-### Week 2 (Coming Next)
+### ✅ Milestone 2: PDF Ingestion
 
-- [x] Ingest and chunk PDF documents
-- [x] Expand index dynamically
-- [x] Return top 3 matches + source metadata
-- [ ] CI/CD pipeline setup
+- [x] Upload PDF endpoint (`/upload`)
+- [x] Chunking + embedding of uploaded content
+- [x] FAISS index updated and persisted
+
+### ✅ Milestone 3: CI/CD + Azure Infra
+
+- [x] GitHub Actions workflow: build → push → deploy
+- [x] Azure Container Registry + Container Apps
+- [x] Secure ACR pull via registry credentials
+
+### 🟡 Milestone 4: RAG Features + Frontend Integration
+
+- [ ] Integrate Power Apps (or Streamlit prototype)
+- [ ] Add audit logging for queries / compliance
+- [ ] Support multiple PDF sources with tagging
+- [ ] Deploy with custom domain / HTTPS cert
