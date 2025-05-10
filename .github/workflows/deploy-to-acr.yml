@@ -16,10 +16,6 @@ jobs:
         run: |
           echo "AZ_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_BASE64 }}' | base64 --decode)" >> $GITHUB_ENV
 
-      - run: echo "$AZ_CREDS"
-        env:
-          AZ_CREDS: ${{ env.AZ_CREDS }}
-
       - name: Login to Azure
         uses: azure/login@v2
         with:
