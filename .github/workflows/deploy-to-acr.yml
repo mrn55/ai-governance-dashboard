@@ -11,16 +11,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Decode Azure Credentials from Base64
+      - name: Decode Base64 Secret to Environment Variable
         id: decode
         run: |
-          echo "${{ secrets.AZURE_CREDENTIALS_BASE64 }}" | base64 --decode > azure-credentials.json
-          echo "azure_creds_file=$PWD/azure-credentials.json" >> $GITHUB_OUTPUT
+          echo "AZ_CREDS=$(echo '${{ secrets.AZURE_CREDENTIALS_BASE64 }}' | base64 --decode)" >> $GITHUB_ENV
+
+      - run: echo "$AZ_CREDS"
+        env:
+          AZ_CREDS: ${{ env.AZ_CREDS }}
 
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          creds-file: ${{ steps.decode.outputs.azure_creds_file }}
+          creds: ${{ env.AZ_CREDS }}
 
       - name: Set Container App Registry Credentials
         run: |
