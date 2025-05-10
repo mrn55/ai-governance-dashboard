@@ -1,4 +1,4 @@
-# Check GitHub CLI auth
+# Ensure GitHub CLI is authenticated
 try {
     gh auth status --hostname github.com > $null 2>&1
     if ($LASTEXITCODE -ne 0) {
@@ -10,16 +10,21 @@ try {
     exit 1
 }
 
+# Define variables
 $resourceGroup = "ai-governance-demo"
 $subscriptionId = (az account show --query id -o tsv)
+$repo = "mrn55/ai-governance-dashboard"
 
+# Create Azure service principal and capture output
 $spJson = az ad sp create-for-rbac `
   --name "github-deployer" `
   --role contributor `
   --scopes "/subscriptions/$subscriptionId/resourceGroups/$resourceGroup" `
   --sdk-auth
-$spJsonSingleLine = ($spJson | ConvertFrom-Json | ConvertTo-Json -Compress)
-Echo $spJsonSingleLine
-$repo = "mrn55/ai-governance-dashboard"
 
-gh secret set AZURE_CREDENTIALS -b $spJsonSingleLine --repo $repo
+# Encode the JSON as base64
+$jsonBytes = [System.Text.Encoding]::UTF8.GetBytes($spJson)
+$base64Json = [Convert]::ToBase64String($jsonBytes)
+
+# Set the secret as base64-encoded value
+gh secret set AZURE_CREDENTIALS_BASE64 --repo $repo --body $base64Json
