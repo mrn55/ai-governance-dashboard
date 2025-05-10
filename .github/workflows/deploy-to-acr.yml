@@ -11,11 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Decode Azure Credentials
+      - name: Decode Azure Credentials from Base64
         id: decode
         run: |
-          echo "${{ secrets.AZURE_CREDENTIALS_BASE64 }}" | base64 -d > $GITHUB_WORKSPACE/azure-credentials.json
-          echo "azure_creds_file=$GITHUB_WORKSPACE/azure-credentials.json" >> $GITHUB_OUTPUT
+          echo "${{ secrets.AZURE_CREDENTIALS_BASE64 }}" | base64 --decode > azure-credentials.json
+          echo "azure_creds_file=$PWD/azure-credentials.json" >> $GITHUB_OUTPUT
 
       - name: Login to Azure
         uses: azure/login@v2
