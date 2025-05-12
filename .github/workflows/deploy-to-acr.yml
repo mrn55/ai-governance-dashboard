@@ -33,14 +33,27 @@ jobs:
       - name: Log in to ACR
         run: az acr login --name nealregistry
 
-      - name: Build and push Docker image
+      - name: Build and push UI Docker image
         run: |
-          docker build -t nealregistry.azurecr.io/sample/fastapi-azure:latest .
-          docker push nealregistry.azurecr.io/sample/fastapi-azure:latest
+          docker build -f Dockerfile.ui -t nealregistry.azurecr.io/ui:latest .
+          docker push nealregistry.azurecr.io/ui:latest
 
-      - name: Deploy to Azure Container App
+      - name: Build and push API Docker image
+        run: |
+          docker build -f Dockerfile.api -t nealregistry.azurecr.io/fastapi-azure:latest .
+          docker push nealregistry.azurecr.io/fastapi-azure:latest
+
+      - name: Deploy API to Azure Container App
         run: |
           az containerapp update \
             --name neal-api \
             --resource-group ai-governance-demo \
-            --image nealregistry.azurecr.io/sample/fastapi-azure:latest
+            --image nealregistry.azurecr.io/fastapi-azure:latest
+
+      - name: Deploy UI to Azure Container App
+        run: |
+          az containerapp update \
+            --name neal-ui \
+            --resource-group ai-governance-demo \
+            --image nealregistry.azurecr.io/ui:latest \
+            --set-env-vars API_URL=https://neal-api.centralus.azurecontainerapps.io
