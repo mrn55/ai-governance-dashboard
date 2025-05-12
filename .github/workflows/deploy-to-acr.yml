@@ -61,8 +61,14 @@ jobs:
 
       - name: Deploy UI to Azure Container App
         run: |
+          API_URL=$(az containerapp show \
+            --name neal-api \
+            --resource-group ai-governance-demo \
+            --query properties.configuration.ingress.fqdn \
+            -o tsv)
+
           az containerapp update \
             --name neal-ui \
             --resource-group ai-governance-demo \
             --image nealregistry.azurecr.io/ui:latest \
-            --set-env-vars API_URL=https://neal-api.centralus.azurecontainerapps.io
+            --set-env-vars API_URL=https://$API_URL
