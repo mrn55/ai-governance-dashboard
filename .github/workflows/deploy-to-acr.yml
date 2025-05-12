@@ -50,6 +50,15 @@ jobs:
             --resource-group ai-governance-demo \
             --image nealregistry.azurecr.io/fastapi-azure:latest
 
+      - name: Set UI Container App Registry Credentials
+        run: |
+          az containerapp registry set \
+            --name neal-ui \
+            --resource-group ai-governance-demo \
+            --server nealregistry.azurecr.io \
+            --username $(az acr credential show --name nealregistry --query "username" -o tsv) \
+            --password $(az acr credential show --name nealregistry --query "passwords[0].value" -o tsv)
+
       - name: Deploy UI to Azure Container App
         run: |
           az containerapp update \
